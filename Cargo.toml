@@ -1,0 +1,13 @@
+[package]
+name = "hello-lucet"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lucet-runtime = { path = "../lucet/lucet-runtime", version = "0.7.0-dev" }
+#lucet-runtime-internals = { path = "../lucet/lucet-runtime/lucet-runtime-internals", version = "0.7.0-dev" }
+lucet-wasi = { path = "../lucet/lucet-wasi", version = "0.7.0-dev" }
+lucet-wasi-sdk = { path = "../lucet/lucet-wasi-sdk", version = "0.7.0-dev" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
