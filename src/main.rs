@@ -1,5 +1,8 @@
 use lucet_runtime::{DlModule, Limits, MmapRegion, Region, Error};
 use lucet_wasi::WasiCtxBuilder;
+use std::net::TcpStream;
+use std::os::unix::io::AsRawFd;
+use std::time::Duration;
 
 #[tokio::main]
 async fn main() {
@@ -18,8 +21,14 @@ async fn main() {
     let wasi_ctx = WasiCtxBuilder::new().inherit_stdio().build();
     instance.insert_embed_ctx(wasi_ctx);
     // (*2) run the WASI main function
-    match instance.run_async("disp", &[], None).await {
+    let stream = TcpStream::connect("www.google.com:80").unwrap();
+    stream.set_read_timeout(Some(Duration::from_secs(2))).unwrap();
+
+    let fd = stream.as_raw_fd();
+
+    match instance.run_async("do_start", &[fd.into()], None).await {
       Err(Error::RuntimeTerminated(e)) => {eprintln!("{:?}", e)},
+      Err(e) => {eprintln!("{}", e)},
       _ => {}
     }
 }
